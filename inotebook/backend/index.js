@@ -10,6 +10,8 @@ const port = 3000
 //   res.send('Hello World!')
 // })
 
+app.use(express.json())
+
 //avalable routes
 app.use("/api/auth", require("./routes/auth"))
 app.use("/api/notes", require("./routes/notes"))
