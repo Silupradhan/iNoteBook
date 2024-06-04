@@ -95,4 +95,45 @@ router.post("/createUser",[
   //     }).then(user => res.json(user));
   //   },
   // );
+
+  // authenticate  a user using : POST "/api/auth/createUser"
+  router.post("/login",[
+    body('email', "Enter a valid Email").isEmail(),
+    body('password', "password can not be blank").exists()
+  ], async(req , res)=>{
+     //if there are error returns bad request and the error
+    
+      const error = validationResult(req);
+      if (!error.isEmpty()) {
+        return res.status(400).json({error : error.array() })
+      }
+    
+      const {email,password} = req.body
+      try{
+   let user =await User.findOne({email})
+   if(!user){
+    return res.status(400).json({error : "Please try to login with correct credintial" })
+   }
+
+   const comparePassword =await bcrypt.compare(password, user.password)
+   if(!comparePassword){
+    return res.status(400).json({error : "Please try to login with correct credintial" })
+   }
+   const data = {
+    user : {
+      id : user.id
+    }
+  }
+
+  const token = jwt.sign(data, JWT_SECRET)
+  res.json({token})
+
+      }
+      catch(error){
+        console.error(error.message)
+      res.status(500).send("Some error occured")
+      }
+
+  })
+
 module.exports  = router
