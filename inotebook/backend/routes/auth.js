@@ -4,29 +4,51 @@ const User = require("../models/User")
 const { body, validationResult } = require('express-validator');
 
 
-//creating a user using : POST ""
-router.post("/",[
+//creating a user using : POST "/api/auth/createUser"
+router.post("/createUser",[
   body('name',"Enter a valid Name").isLength({min : 3}),
   body('email', "Enter a valid Email").isEmail(),
   body('password', "Password must be 6 digit").isLength({min : 6})
-], (req , res)=>{
+], async(req , res)=>{
     // console.log(req.body);  //  to use request body we can use app.use(express.json()) in index.js
    //   const user = User(req.body);
     //  user.save();
   
+    //if there are error returns bad request and the error
+    try {
+      
+    
     const error = validationResult(req);
     if (!error.isEmpty()) {
       return res.status(400).json({error : error.array() })
     }
 
-    User.create({
+    //check weather the user with this email exist already
+    let user = await User.findOne({email : req.body.email})
+    if(user){
+      return res.status(400).json({error : "Sorry a user with this email is already exist" })
+    }
+
+    //Create a new user
+   user=await User.create({
       name : req.body.name,
       email : req.body.email,
       password : req.body.password,
-    }).then(user => res.json(user))
-    .catch(err =>{console.log(err) 
-      res.json({error : "please enter a unique email address", message : err.message})
     })
+
+    res.json(user)
+    
+    // .then(user => res.json(user))
+    // .catch(err =>{console.log(err) 
+    //   res.json({error : "please enter a unique email address", message : err.message})
+    // })
+
+
+    //catch errors
+  } catch (error) {
+      console.error(error.message)
+      res.status(500).send("Some error occured")
+  }
     
    
    
