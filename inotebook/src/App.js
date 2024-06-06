@@ -7,22 +7,25 @@ import {               // THIS CODE FRAGMENT IS USED FOR REACT ROUTER
   Routes,
   Route
 } from "react-router-dom";
+import NoteState from './context/notes/NoteState';
+
 
 
 
 function App() {
- return (
-   <>
-   <Router>
-     <Navbar></Navbar>
-    
-     <Routes>
-      <Route exact path="/" element={<Home />} />
-      <Route exact path='/about' element={<About/>}> </Route>
-     </Routes>
-     </Router>
-   </>
- )
+  return (
+    <>
+      <NoteState>
+        <Router>
+          <Navbar />
+          <Routes>
+            <Route exact path="/" element={<Home />} />
+            <Route exact path='/about' element={<About />}> </Route>
+          </Routes>
+        </Router>
+      </NoteState>
+    </>
+  )
 }
 
-export default App;
+export default App
