@@ -8,6 +8,7 @@ import {               // THIS CODE FRAGMENT IS USED FOR REACT ROUTER
   Route
 } from "react-router-dom";
 import NoteState from './context/notes/NoteState';
+import Alert from './components/Alert';
 
 
 
@@ -18,6 +19,7 @@ function App() {
       <NoteState>
         <Router>
           <Navbar />
+          <Alert message="This is alert message"/>
           <div className='container'>
             <Routes>
               <Route exact path="/" element={<Home />} />
