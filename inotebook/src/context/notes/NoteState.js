@@ -1,6 +1,6 @@
 import { useState } from "react";
 import NoteContext from "./noteContext";
-import AddNotes from "../../components/AddNotes";
+// import AddNotes from "../../components/AddNotes";
 
 const NoteState = (props) =>{
   const notesInitial = [
@@ -74,8 +74,10 @@ const addNotes = (title,description,tag) =>{
   }
 
   // Delete note
-  const  Deletenote = () =>{
-  
+  const  Deletenote = (id) =>{
+    console.log("note has been deleted")
+    const deletenote = notes.filter((note)=>{return note._id !== id})
+    setNotes(deletenote)
   }
   
   return(

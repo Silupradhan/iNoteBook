@@ -5,7 +5,7 @@ import NoteItem from './NoteItem'
 
 const Note = () => {
     const context = useContext(noteContext)
-    const {notes,addNotes} =context
+    const {notes} =context
     // eslint-disable-next-line
   return (
     <>
