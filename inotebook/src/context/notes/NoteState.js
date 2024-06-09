@@ -3,58 +3,42 @@ import NoteContext from "./noteContext";
 // import AddNotes from "../../components/AddNotes";
 
 const NoteState = (props) =>{
-  const notesInitial = [
-    {
-      "_id": "666323b9080108c371e3ed61",
-      "user": "6663207ea778230222f21913",
-      "title": "this is my firt note",
-      "description": "this is my first description",
-      "tag": "personal tag",
-      "date": "2024-06-07T15:14:01.432Z",
-      "__v": 0
-    },
-    {
-      "_id": "666323b9080108c371e3ed614",
-      "user": "6663207ea778230222f21913",
-      "title": "this is my firt note",
-      "description": "this is my first description",
-      "tag": "personal tag",
-      "date": "2024-06-07T15:14:01.432Z",
-      "__v": 0
-    },
-    {
-      "_id": "666323b9080108c371e3ed615",
-      "user": "6663207ea778230222f21913",
-      "title": "this is my firt note",
-      "description": "this is my first description",
-      "tag": "personal tag",
-      "date": "2024-06-07T15:14:01.432Z",
-      "__v": 0
-    },
-    {
-      "_id": "666323b9080108c371e3ed616",
-      "user": "6663207ea778230222f21913",
-      "title": "this is my firt note",
-      "description": "this is my first description",
-      "tag": "personal tag",
-      "date": "2024-06-07T15:14:01.432Z",
-      "__v": 0
-    },
-    {
-      "_id": "666323b9080108c371e3ed617",
-      "user": "6663207ea778230222f21913",
-      "title": "this is my firt note",
-      "description": "this is my first description",
-      "tag": "personal tag",
-      "date": "2024-06-07T15:14:01.432Z",
-      "__v": 0
-    }
-  ]
+  const host = "http://localhost:5000"
+  const notesInitial = []
 
   const [notes,setNotes] = useState(notesInitial)
 
+
+  //get all notes
+  const getNotes = async () =>{
+    const response = await fetch(`${host}/api/notes/fetchallnote`,{
+      method : "GET",
+      headers :{
+        "Content-Type" : "application/json",
+        "auth-token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjY2MzIwN2VhNzc4MjMwMjIyZjIxOTEzIn0sImlhdCI6MTcxNzc3MjQxNH0.2Krm0ysw65mQlWmLnQyt1R8J1tPfhpl6bqdZ8LZQ8F8"
+      },
+    });
+    const json = await response.json()
+    console.log(json)
+    setNotes(json)
+  }
+
+
+
   //Add note
-const addNotes = (title,description,tag) =>{
+const addNotes = async(title,description,tag) =>{
+  //api call
+  const response = await fetch(`${host}/api/notes/addnote`,{
+    method : "POST",
+    headers :{
+      "Content-Type" : "application/json",
+      "auth-token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjY2MzIwN2VhNzc4MjMwMjIyZjIxOTEzIn0sImlhdCI6MTcxNzc3MjQxNH0.2Krm0ysw65mQlWmLnQyt1R8J1tPfhpl6bqdZ8LZQ8F8"
+    },
+    body : JSON.stringify({title,description,tag})
+  });
+  const json =  response.json()
+
+
   const note = {
     "_id": "666323b9080108c371e3ed617",
     "user": "6663207ea778230222f21913",
@@ -68,8 +52,31 @@ const addNotes = (title,description,tag) =>{
 
 }
 
+
+
   // Edit note
-  const Editnote = () =>{
+  const Editnote = async (id,title,description,tag) =>{
+    //api call
+    const response = await fetch(`${host}/api/notes/updatenote/${id}`,{
+      method : "PUT",
+      headers :{
+        "Content-Type" : "application/json",
+        "auth-token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjY2MzIwN2VhNzc4MjMwMjIyZjIxOTEzIn0sImlhdCI6MTcxNzc3MjQxNH0.2Krm0ysw65mQlWmLnQyt1R8J1tPfhpl6bqdZ8LZQ8F8"
+      },
+      body : JSON.stringify({title,description,tag})
+    });
+    const json =  response.json()
+
+    //logic for edit note
+    for (let index = 0; index < notes.length; index++) {
+      const element = notes[index];
+      if(element._id === id){
+        element.title = title
+        element.description = description
+        element.tag = tag
+      }
+      
+    }
   
   }
 
@@ -81,7 +88,7 @@ const addNotes = (title,description,tag) =>{
   }
   
   return(
-    <NoteContext.Provider value={{notes,setNotes,addNotes,Editnote,Deletenote}}>
+    <NoteContext.Provider value={{notes,setNotes,addNotes,Editnote,Deletenote,getNotes}}>
         {props.children}
     </NoteContext.Provider>
   )
